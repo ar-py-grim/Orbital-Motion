@@ -6,5 +6,6 @@ This repo contains code for simulating motion of Moon around Earth and motion of
 
 ## Refrences
 1. Parametrized equation of ellipse formula can be found here [Ellipse](https://math.stackexchange.com/questions/315386/ellipse-in-polar-coordinates).
-2. Details about Moon and Earth can be found here [Moon](https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html).
-3. Details about Sun and Earth can be found here [Sun](https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html).
+2. Velocity of objects in elliptical orbits can be found here [Vis-viva equation](https://en.wikipedia.org/wiki/Vis-viva_equation).
+3. Details about Moon and Earth can be found here [Moon](https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html).
+4. Details about Sun and Earth can be found here [Sun](https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html).

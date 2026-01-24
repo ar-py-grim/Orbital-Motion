@@ -1,5 +1,9 @@
 from vpython import *
 
+scene.width = 1200   # pixels
+scene.height = 800   #pixels
+scene.title = "Earth-Moon Orbit Simulation"
+
 G = 6.67e-11  # N(m^2)/(kg^2)
 R_e = 6.37e6   # m
 M_e = 5.97e24  # kg

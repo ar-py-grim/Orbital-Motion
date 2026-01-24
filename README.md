@@ -2,10 +2,10 @@
 
 This repo contains code for simulating motion of Moon around Earth and motion of Earth around Sun 
 1. In **earth&moon.py script**, Moon revolves around Earth in circular orbit using Newtons's law of Gravitation and basic kinematics.
-  <img width="664" height="454" alt="image" src="https://github.com/user-attachments/assets/5255996f-6212-4566-870e-502504415916" />
+<img width="664" height="454" alt="image" src="https://github.com/user-attachments/assets/5255996f-6212-4566-870e-502504415916" />
 
 2. In **earth&sun.py script**, Earth revolves around Sun in elleptical orbit following Kepler's law of motion.
-   <img width="1890" height="874" alt="image" src="https://github.com/user-attachments/assets/003435e7-32be-47a5-b1d9-d0937a53e01a" />
+<img width="1890" height="874" alt="image" src="https://github.com/user-attachments/assets/003435e7-32be-47a5-b1d9-d0937a53e01a" />
 
 
 ## Refrences

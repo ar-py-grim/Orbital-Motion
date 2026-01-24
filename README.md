@@ -1,5 +1,8 @@
 # Orbital-Motion
 
+## Software Version
+1. Vpython: 7.6.4
+
 This repo contains code for simulating motion of Moon around Earth and motion of Earth around Sun 
 1. In **earth&moon.py script**, Moon revolves around Earth in circular orbit using Newtons's law of Gravitation and basic kinematics.
 <img width="664" height="454" alt="image" src="https://github.com/user-attachments/assets/5255996f-6212-4566-870e-502504415916" />

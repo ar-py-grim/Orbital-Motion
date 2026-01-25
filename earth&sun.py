@@ -18,9 +18,9 @@ scene.background = color.black
 scene.range = a*1.3
 
 sun = sphere(radius=R_s*10, color=color.yellow, pos=vector(0, 0, 0), emissive=True)
-r = a * (1 - eccentricity)
+r = a*(1-eccentricity)
 earth = sphere(radius=R_e*1000, texture=textures.earth, pos=vector(r, 0, 0), make_trail=True)
-v_perihelion = math.sqrt(G * M_s * (1 + eccentricity) / r)
+v_perihelion = math.sqrt(G*M_s*(1+eccentricity)/r)
 earth.velocity = vector(0, v_perihelion, 0)
 
 velocity_label = label(pos=earth.pos, text="", xoffset=20, yoffset=30, space=30, height=14, color=color.white, box=False)
@@ -49,5 +49,6 @@ while True:
     velocity_label.text = f"Velocity: {speed/1000:.4f} km/s" 
     distance_label.pos = earth.pos
     distance_label.text = f"Distance: {mag(earth.pos)/10**9:.4f} million km"  # Fixed typo!
+
 
     theta += dtheta

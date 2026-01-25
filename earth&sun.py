@@ -36,8 +36,8 @@ while True:
     omega = speed/r 
     dtheta = omega * dt 
 
-    x = r * cos(theta)
-    y = r * sin(theta) 
+    x = r*cos(theta)
+    y = r*sin(theta) 
     earth.pos = vector(x, y, 0)
     direction = vector(-sin(theta), cos(theta), 0) 
     earth.velocity = direction * speed 
@@ -52,3 +52,4 @@ while True:
 
 
     theta += dtheta
+

@@ -5,6 +5,7 @@
 2. GLEW (2.3.1): https://glew.sourceforge.net/
 3. GLFW (3.4): https://www.glfw.org/download.html
 4. GLM (1.0.3): https://github.com/g-truc/glm/releases
+5. stb_image_write.h: https://github.com/nothings/stb/blob/master/stb_image_write.h
 
 This repo contains code for simulating motion of Moon around Earth and motion of Earth around Sun 
 1. In **earth&moon.py script**, Moon revolves around Earth in circular orbit using Newtons's law of Gravitation and basic kinematics.

@@ -14,7 +14,7 @@ This repo contains code for simulating motion of Moon around Earth and motion of
 <img width="1890" height="874" alt="image" src="https://github.com/user-attachments/assets/003435e7-32be-47a5-b1d9-d0937a53e01a" />
 
 3. In **Solar_system.cpp**, all 8 planets of solar system revolve around the sun using OpenGL
-
+<img width="1920" height="1080" alt="screenshot_001" src="https://github.com/user-attachments/assets/dc623a5f-6992-4e16-8768-42341b1cb6ae" />
 
 ## Refrences
 1. Parametrized equation of ellipse formula can be found here [Ellipse](https://math.stackexchange.com/questions/315386/ellipse-in-polar-coordinates).

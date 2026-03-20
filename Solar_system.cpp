@@ -1,4 +1,5 @@
-﻿#define GLEW_STATIC
+﻿#define _CRT_SECURE_NO_WARNINGS  // suppress MSVC sprintf warnings in stb_image_write
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -7,10 +8,13 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 float camYaw = 0.f, camPitch = 30.f, camDist = 60.f;
 double lastX, lastY;
 bool   mouseDown = false;
+bool   screenshotKey = false;
 
 void mouseBtnCB(GLFWwindow*, int btn, int act, int) {
     if (btn == GLFW_MOUSE_BUTTON_LEFT) mouseDown = (act == GLFW_PRESS);
@@ -28,7 +32,15 @@ void scrollCB(GLFWwindow*, double, double dy) {
     camDist = glm::clamp(camDist, 10.f, 200.f);
 }
 
-// ─── GLSL ─────────────────────────────────────────────────────────────────────
+void saveScreenshot(int w, int h, const char* path) {
+    std::vector<unsigned char> pixels(w * h * 3);
+    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
+    stbi_flip_vertically_on_write(1); // OpenGL is bottom-left, PNG expects top-left
+    stbi_write_png(path, w, h, 3, pixels.data(), w * 3);
+    stbi_flip_vertically_on_write(0);
+    std::cout << "Screenshot saved to " << path << "\n";
+}
+
 const char* vertSrc = R"(
 #version 330 core
 layout(location=0) in vec3 aPos;
@@ -54,38 +66,27 @@ uniform vec3  uColor;
 uniform vec3  uLightPos;
 uniform vec3  uViewPos;
 uniform bool  uEmissive;
-uniform bool  uBanded;      // true for Jupiter
-uniform float uSpinAngle;   // Jupiter's current spin (for GRS longitude)
+uniform bool  uBanded;
+uniform float uSpinAngle;
 
 void main(){
     vec3 color = uColor;
 
     if(uBanded){
-        float lat = vNormal.y; // -1..1, latitude proxy
-
-        // Primary bands
+        float lat = vNormal.y;
         float b1 = sin(lat * 13.0) * 0.5 + 0.5;
-        vec3 dark  = vec3(0.72, 0.48, 0.30);  // brown belt
-        vec3 light = vec3(0.96, 0.89, 0.74);  // cream zone
+        vec3 dark  = vec3(0.72, 0.48, 0.30);
+        vec3 light = vec3(0.96, 0.89, 0.74);
         color = mix(dark, light, b1);
-
-        // Secondary modulation for more complexity
         float b2 = sin(lat * 7.0 + 1.2) * 0.5 + 0.5;
         color = mix(color, vec3(0.84, 0.63, 0.42), b2 * 0.35);
-
-        // Subtle polar darkening
         color *= 1.0 - 0.25 * (lat * lat);
 
-        // ── Great Red Spot ────────────────────────────────────────────────
-        // Recover local-space longitude by subtracting the spin offset
         float lon = atan(vNormal.z, vNormal.x) - uSpinAngle;
         lon = mod(lon + 3.14159265, 6.28318530) - 3.14159265;
-
-        float dLat = lat - (-0.28);  // sits in southern hemisphere
+        float dLat = lat - (-0.28);
         float dLon = lon - 0.0;
         dLon = mod(dLon + 3.14159265, 6.28318530) - 3.14159265;
-
-        // Oval: wider in longitude than latitude
         float spot = dLon * dLon * 2.5 + dLat * dLat * 14.0;
         if(spot < 1.0){
             vec3 grsOuter = vec3(0.85, 0.35, 0.18);
@@ -122,7 +123,6 @@ uniform vec4 uRingColor;
 void main(){ FragColor = uRingColor; }
 )";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 GLuint compileProgram(const char* v, const char* f) {
     auto compile = [](GLenum t, const char* s) {
         GLuint sh = glCreateShader(t);
@@ -209,7 +209,6 @@ GLuint makePlanetRingVAO(float innerR, float outerR, GLuint& vbo, GLuint& ebo,
     return vao;
 }
 
-// ─── Planet data ──────────────────────────────────────────────────────────────
 struct Planet {
     const char* name;
     float  radius, orbit, speed, spinSpeed;
@@ -231,7 +230,6 @@ const int NUM_PLANETS = 8;
 const int SATURN_IDX = 5;
 const int JUPITER_IDX = 4;
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
 int main()
 {
     if (!glfwInit()) return -1;
@@ -281,7 +279,6 @@ int main()
         Mesh pm = makeSphere(planets[i].radius);
         pVAO[i] = uploadMesh(pm, pVBO[i], pEBO[i]);
         orbitVAO[i] = makeOrbitVAO(planets[i].orbit, orbitVBO[i]);
-
         if (planets[i].moonOrbit > 0) {
             Mesh mm = makeSphere(planets[i].moonRadius);
             mVAO[i] = uploadMesh(mm, mVBO[i], mEBO[i]);
@@ -292,6 +289,7 @@ int main()
     float orbitAngles[NUM_PLANETS] = {};
     float spinAngles[NUM_PLANETS] = {};
     float moonAngles[NUM_PLANETS] = {};
+    int   shotCount = 0;
 
     double prevTime = glfwGetTime();
 
@@ -311,7 +309,7 @@ int main()
         glfwGetFramebufferSize(win, &fbW, &fbH);
         glViewport(0, 0, fbW, fbH);
 
-        glClearColor(0.08f, 0.08f, 0.20f, 1.f);
+        glClearColor(0.05f, 0.05f, 0.15f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         float yawR = glm::radians(camYaw);
@@ -366,7 +364,6 @@ int main()
             glm::mat4 mvp = VP * model;
             glm::mat3 nm = glm::transpose(glm::inverse(glm::mat3(model)));
 
-            // Enable banding + GRS for Jupiter
             if (i == JUPITER_IDX) {
                 glUniform1i(glGetUniformLocation(prog, "uBanded"), 1);
                 glUniform1f(glGetUniformLocation(prog, "uSpinAngle"), spinAngles[i]);
@@ -383,7 +380,6 @@ int main()
             glBindVertexArray(pVAO[i]);
             glDrawElements(GL_TRIANGLES, (GLsizei)32 * 32 * 6, GL_UNSIGNED_INT, 0);
 
-            // Saturn's rings
             if (i == SATURN_IDX) {
                 glUseProgram(ringProg);
                 glm::mat4 ringModel = glm::translate(glm::mat4(1.f), pPos);
@@ -400,7 +396,6 @@ int main()
                 glUniform1i(glGetUniformLocation(prog, "uBanded"), 0);
             }
 
-            // Moon
             if (planets[i].moonOrbit > 0) {
                 glUseProgram(ringProg);
                 glm::mat4 ringVP = VP * glm::translate(glm::mat4(1.f), pPos);
@@ -432,8 +427,17 @@ int main()
 
         glfwSwapBuffers(win);
         glfwPollEvents();
+
         if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(win, GLFW_TRUE);
+
+        bool pDown = glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS;
+        if (pDown && !screenshotKey) {
+            char path[64];
+            std::snprintf(path, sizeof(path), "screenshot_%03d.png", ++shotCount);
+            saveScreenshot(fbW, fbH, path);
+        }
+        screenshotKey = pDown;
     }
 
     glfwDestroyWindow(win);

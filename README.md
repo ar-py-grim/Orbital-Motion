@@ -2,6 +2,9 @@
 
 ## Software Version
 1. Vpython: 7.6.4
+2. GLEW: https://glew.sourceforge.net/
+3. GLFW: https://www.glfw.org/download.html
+4. GLM: https://github.com/g-truc/glm/releases
 
 This repo contains code for simulating motion of Moon around Earth and motion of Earth around Sun 
 1. In **earth&moon.py script**, Moon revolves around Earth in circular orbit using Newtons's law of Gravitation and basic kinematics.
@@ -9,6 +12,8 @@ This repo contains code for simulating motion of Moon around Earth and motion of
 
 2. In **earth&sun.py script**, Earth revolves around Sun in elleptical orbit following Kepler's law of motion.
 <img width="1890" height="874" alt="image" src="https://github.com/user-attachments/assets/003435e7-32be-47a5-b1d9-d0937a53e01a" />
+
+3. In **Solar_system.cpp**, all 8 planets of solar system revolve around the sun using OpenGL
 
 
 ## Refrences

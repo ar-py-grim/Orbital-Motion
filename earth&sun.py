@@ -34,7 +34,7 @@ while True:
     r = a*(1-eccentricity**2)/(1+eccentricity*cos(theta))
     speed = math.sqrt(G*M_s*(2/r-1/a))
     omega = speed/r 
-    dtheta = omega * dt 
+    dtheta = omega*dt 
 
     x = r*cos(theta)
     y = r*sin(theta) 
@@ -44,12 +44,9 @@ while True:
     sun.rotate(angle=omega_s*dt, axis=vector(0, 1, 0), origin=sun.pos)
     earth.rotate(angle=omega_e*dt, axis=vector(0, 1, 0), origin=earth.pos)
 
-    # Labels follow Earth with better spacing
     velocity_label.pos = earth.pos
     velocity_label.text = f"Velocity: {speed/1000:.4f} km/s" 
     distance_label.pos = earth.pos
     distance_label.text = f"Distance: {mag(earth.pos)/10**9:.4f} million km"  # Fixed typo!
 
-
     theta += dtheta
-
